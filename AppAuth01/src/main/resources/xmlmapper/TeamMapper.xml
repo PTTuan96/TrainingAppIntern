@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.model.mapper.TeamMapper">
+	<resultMap type="Team" id="teamMapping">
+		<id property="id" column = "id_team"/>
+		<result property="team_name" column = "team_name"/>
+		<result property="team_rate" column = "team_rate"/>
+		<result property="team_type" column="team_type"/>
+		<result property="team_description" column="team_description"/>
+	 	<result property="id_tour" column="id_tour"/>
+	</resultMap>
+	<insert id="saveTeam" flushCache="true"  statementType="PREPARED" useGeneratedKeys="true" keyColumn="id_team" keyProperty="id" >
+		INSERT INTO team_tbl(
+		team_name,
+		team_totalwin,
+		team_totalmatch,
+		team_type,
+		team_description,
+		team_logo
+		) VALUES(
+		#{team_name},
+		0,
+		0,
+		#{team_type},
+		#{team_description},
+		#{team_logo}
+		)
+	</insert>
+
+	<select id="findAllTeams" flushCache="true" statementType="PREPARED"
+		resultMap="teamMapping">
+		SELECT * FROM team_tbl
+	</select>
+
+	<select id="findById" flushCache="true" statementType="PREPARED"
+		resultType="Team">
+		SELECT * FROM team_tbl WHERE id= #{id}
+	</select>
+
+	<select id="findByName" flushCache="true" statementType="PREPARED" resultType="Team">
+		SELECT * FROM team_tbl WHERE team_name= #{team_name}
+	</select>
+
+	<select id="findAllTeamByTours">
+
+	</select>
+
+	<select id="countMatchsByTeam">
+
+	</select>
+
+	<select id="countWinsByTeam">
+
+	</select>
+
+	<delete id="deleteTeam" flushCache="true" statementType="STATEMENT" parameterType="Integer">
+		DELETE FROM team_tbl WHERE id = ${id};
+	</delete>
+
+</mapper>

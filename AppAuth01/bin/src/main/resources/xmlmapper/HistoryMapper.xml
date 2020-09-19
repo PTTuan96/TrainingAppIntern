@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.model.mapper.HistoryMapper">
+	<resultMap type="History" id="historyMapping">
+		<id property="id_history" column = "id_history"/>
+		<result property="id_member" column = "id_member"/>
+		<result property="id_team" column = "id_team"/>
+		<result property="id_tour" column="id_tour"/>
+
+	</resultMap>
+
+	<insert id="saveHistory" flushCache="true" statementType="PREPARED" useGeneratedKeys="true" keyColumn="id" keyProperty="id_history" >
+		<!-- SET @var_id := (SELECT MAX(id) from profile_tbl); -->
+		<!-- VALUES (@var_id, #{team.id}); -->
+		INSERT INTO history_tbl (id_member, id_team, id_tour)
+		VALUES (#{id_member},#{id_team},#{id_tour});
+
+	</insert>
+
+	<select id="findMembersNotInTour" flushCache="true" statementType="PREPARED" resultType="History">
+		Select * from history_tbl where id_tour = 0
+	</select>
+
+	<select id="returnLatestMembers" resultType="History" >
+		SELECT * FROM history_tbl Where id_member = ${idMember} and id_team = ${idTeam}
+		ORDER BY id_member DESC
+		LIMIT 1;
+	</select>
+
+	<select id="findById" flushCache="true" statementType="PREPARED"
+		resultType="History">
+		SELECT profile_name as name, profile_email as email, profile_phone as phone,
+				profile_age as age, profile_gender as gender, profile_address as address,
+				profile_avatar as avatar
+		FROM profile_tbl WHERE id= #{id}
+	</select>
+</mapper>

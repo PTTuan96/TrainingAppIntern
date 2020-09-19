@@ -1,22 +1,15 @@
 package com.practice.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+//@NoArgsConstructor
+@AllArgsConstructor
 public class Tournament {
 	private final int id;
-	private final String tourName;
-
-	public Tournament(int id, String tourName) {
-		super();
-		this.id = id;
-		this.tourName = tourName;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public String getTourName() {
-		return tourName;
-	}
-	
-	
+	private final String tourName;	
 }

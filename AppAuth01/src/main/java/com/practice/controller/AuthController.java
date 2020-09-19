@@ -1,5 +1,6 @@
 package com.practice.controller;
 
+import com.practice.inputform.LoginRequest;
 import com.practice.jwt.JwtTokenProvider;
 import com.practice.response.JWTLoginSuccessResponse;
 //import com.practice.validator.AccountValidator;
@@ -37,17 +38,17 @@ public class AuthController {
 	public ResponseEntity<?> registerUser(@RequestBody Account account){ //BindingResult result
 //		accountValidator.validate(account, result);
 
-		Long newAccount = accountService.saveAccount(account);
+		accountService.saveAccount(account);
 
 		return new ResponseEntity<Account>(account, HttpStatus.CREATED);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@RequestBody Account account) {
-		Authentication authentication = authenticationManager.authenticate(
+	public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+		Authentication authentication = authenticationManager.authenticate( // Run to loadByUserName in AccountService
 				new UsernamePasswordAuthenticationToken(
-						account.getEmail(),
-						account.getPassword()
+						loginRequest.getUsername(),
+						loginRequest.getPassword()
 				)
 		);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -61,8 +62,4 @@ public class AuthController {
 		return "Logout Success";
 	}
 
-	@GetMapping("/{email}")
-	public Account getEmail(@PathVariable String email) {
-		return accountService.getByUsername(email);
-	}
 }

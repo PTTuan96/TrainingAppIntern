@@ -14,4 +14,5 @@ public class History {
 	private Long id_member;
 	private Long id_team;
 	private Long id_tour;
+	
 }

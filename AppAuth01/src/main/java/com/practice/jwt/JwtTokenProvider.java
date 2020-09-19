@@ -1,10 +1,8 @@
 package com.practice.jwt;
 
 import com.practice.model.Account;
-import com.practice.security.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +28,8 @@ public class JwtTokenProvider {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", (Long.toString(account.getId())));
         claims.put("username", account.getUsername());
-//        claims.put("role", role.getGrantedAuthorities());
+        claims.put("email", account.getEmail());
+        claims.put("role", account.getRole());
 
         return Jwts.builder()
                 .setSubject(accountId)

@@ -2,11 +2,6 @@ package com.practice.controller;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletContext;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.practice.dto.MemberInfoDTO;
-import com.practice.exception.DuplicateDataException;
 import com.practice.inputform.TeamForm;
 import com.practice.model.Team;
 import com.practice.service.TeamService;
@@ -42,8 +34,8 @@ public class TeamController {
 		return teamService.findAll();
 	}
 
-	@Autowired
-	private ServletContext servletContext;
+//	@Autowired
+//	private ServletContext servletContext;
 
 	@PostMapping("/create")
 	public ResponseEntity<?> addTeam(@ModelAttribute TeamForm teamForm) throws Exception {

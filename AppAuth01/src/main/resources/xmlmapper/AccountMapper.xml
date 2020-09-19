@@ -29,7 +29,7 @@
 		SELECT * FROM account_tbl Where account_email=#{email}
 	</select>
 
-	<insert id="saveAccount" parameterType="Account">
+	<insert id="saveAccount" parameterType="Account" keyColumn="id" keyProperty="id">
 		INSERT INTO account_tbl(
 		account_username,
 		account_email,

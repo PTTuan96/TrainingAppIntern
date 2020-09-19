@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.model.mapper.ProfileMapper">
+	<resultMap type="Profile" id="profileMapping">
+		<id property="id" column = "id"/>
+		<result property="name" column = "profile_name"/>
+		<result property="email" column = "profile_email"/>
+		<result property="phone" column="profile_phone"/>
+		<result property="age" column="profile_age"/>
+	 	<result property="gender" column="profile_gender"/>
+		<result property="address" column="profile_address"/>
+	 	<result property="avatar" column="profile_avatar"/>
+	</resultMap>
+
+	<insert id="saveProfile" flushCache="true" statementType="PREPARED" useGeneratedKeys="true" keyColumn="id" keyProperty="id" >
+		INSERT INTO profile_tbl(
+		profile_name,
+		profile_email,
+		profile_phone,
+		profile_age,
+		profile_gender,
+		profile_address,
+		profile_avatar
+		) VALUES(
+		#{name},
+		#{email},
+		#{phone},
+		#{age},
+		#{gender},
+		#{address},
+		#{avatar}
+		);
+
+		SET @var_id := (SELECT MAX(id) from profile_tbl);
+
+		INSERT INTO history (id_member, id_team, id_tour)
+		<!-- VALUES (@var_id, #{team.id}); -->
+		VALUES (@var_id, 0 , 0)
+
+	</insert>
+
+	<select id="findAllProfile" flushCache="true" statementType="PREPARED"
+		resultMap="profileMapping">
+		SELECT * FROM profile_tbl
+	</select>
+
+	<select id="findByEmail" flushCache="true"
+		statementType="PREPARED" resultType="Profile">
+		SELECT * FROM profile_tbl WHERE
+		profile_email=#{email}
+	</select>
+
+	<select id="findById" flushCache="true" statementType="PREPARED"
+		resultType="Profile">
+		SELECT profile_name as name, profile_email as email, profile_phone as phone,
+				profile_age as age, profile_gender as gender, profile_address as address,
+				profile_avatar as avatar
+		FROM profile_tbl WHERE id= #{id}
+	</select>
+
+	<delete id="deleteProfile" flushCache="true" statementType="STATEMENT" parameterType="Integer">
+		DELETE FROM profile_tbl WHERE id = ${id};
+	</delete>
+
+	<select id="findMembersByTeam">
+
+	</select>
+
+
+</mapper>

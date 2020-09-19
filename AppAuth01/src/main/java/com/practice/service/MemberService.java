@@ -44,7 +44,7 @@ public class MemberService {
 		account.setEmail(profile.getEmail());
 		account.setPassword("123456");
 		account.setUsername(profile.getName().toLowerCase().replace("\\s+","") + rand.nextInt(900) + 100);
-		account.setRole("ROLE_MEMBER");
+//		account.setRole("ROLE_MEMBER");
 		accountRepository.saveAccount(account);
 		return profileRepository.saveMember(profile);
 	}

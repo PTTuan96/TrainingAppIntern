@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.model.mapper.AccountMapper">
+	<resultMap type="Account" id="accountMapping">
+		<id column="id" property="id" />
+		<result column="account_username" property="username"/>
+		<result column="account_email" property="email" />
+		<result column="account_password" property="password" />
+		<result column="account_role" property="role"/>
+		<association property="profile" >
+			<id property="id" column = "id_profile"/>
+			<result property="name" column = "profile_name"/>
+			<result property="email" column = "profile_email"/>
+			<result property="phone" column="profile_phone"/>
+			<result property="age" column="profile_age"/>
+		 	<result property="gender" column="profile_gender"/>
+			<result property="address" column="profile_address"/>
+		 	<result property="avatar" column="profile_avatar"/>
+		</association>
+	</resultMap>
+
+	<select id="findAll" resultMap="accountMapping">
+		SELECT * FROM account_tbl ORDER BY id DESC
+	</select>
+
+	<select id="findByEmail" resultMap="accountMapping">
+		SELECT * FROM account_tbl Where account_email=#{email}
+	</select>
+
+	<insert id="saveAccount" parameterType="Account">
+		INSERT INTO account_tbl(
+		account_username,
+		account_email,
+		account_password,
+		account_role
+		) VALUES(
+		#{username},
+		#{email},
+		#{password},
+		#{role}
+		)
+	</insert>
+	<update id="replace" parameterType="Account">
+		UPDATE account_tbl SET account_password=#{password} WHERE account_email=#{email}
+	</update>
+	<delete id="delete" parameterType = "int">
+		DELETE from account_tbl WHERE id = #{id}
+	</delete>
+	<select id="pageUser" resultMap="accountMapping">
+		SELECT * FROM account_tbl Where ${nametype} LIKE #{name} ORDER BY id DESC LIMIT #{page},#{pagesize}
+	</select>
+
+	<select id="getMembersEmailByRole" resultMap="accountMapping">
+		SELECT a.id,a.account_username, p.id as id_profile ,p.profile_name,p.profile_email,p.profile_phone,p.profile_age,p.profile_age,p.profile_gender,p.profile_address,p.profile_avatar
+		FROM profile_tbl p
+		INNER JOIN account_tbl a ON p.profile_email = a.account_email;
+	</select>
+</mapper>

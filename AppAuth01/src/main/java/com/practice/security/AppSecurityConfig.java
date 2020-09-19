@@ -1,10 +1,11 @@
 package com.practice.security;
 
-import com.practice.service.CustomAccountDetailsService;
+import com.practice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -25,7 +26,7 @@ import static com.practice.security.SecurityStaticConstants.*;
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
-	private CustomAccountDetailsService customAccountDetailsService;
+	private AccountService accountService;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -68,10 +69,19 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter{
 
 
 	@Override
-	protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-		authenticationManagerBuilder.userDetailsService(customAccountDetailsService).passwordEncoder(passwordEncoder);
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(daoAuthenticationProvider());
 	}
 
+	
+	@Bean
+	public DaoAuthenticationProvider daoAuthenticationProvider() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setPasswordEncoder(passwordEncoder);
+		provider.setUserDetailsService(accountService);
+		return provider;
+	}
+	
 	@Override
 	@Bean(BeanIds.AUTHENTICATION_MANAGER)
 	protected AuthenticationManager authenticationManager() throws Exception {

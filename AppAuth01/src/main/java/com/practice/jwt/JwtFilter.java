@@ -41,7 +41,7 @@ import static com.practice.security.SecurityStaticConstants.*;
 public class JwtFilter extends OncePerRequestFilter{
 	@Autowired
 	private JwtTokenProvider tokenProvider;
-	
+
 	@Autowired
 	private AccountService accountService;
 
@@ -49,38 +49,38 @@ public class JwtFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
-			
+
 			String jwt = getJWTFromRequest(request);
-			
+
 			if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+
 				String email = tokenProvider.getUserEmailFromJWT(jwt);
-//				String role = tokenProvider.getUserRoleFromJWT(jwt);
 				UserDetails userDetails = accountService.loadUserByUsername(email);
-				
-				
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails        , userDetails.isCredentialsNonExpired(), userDetails.getAuthorities()
 				); //current logged user   , status about userAccount             , role and authorities
-				
-				
+
+
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
-			
+
 		}catch (Exception ex) {
 			logger.error("Could not set user authentication in security context", ex);
 		}
-		
+
 		filterChain.doFilter(request, response);
 	}
-	
-	private String getJWTFromRequest(HttpServletRequest request) {
+
+	public String getJWTFromRequest(HttpServletRequest request) {
 		String bearerToken = request.getHeader(HEADER_STRING);
-		
+
 		if(StringUtils.hasText(bearerToken)&&bearerToken.startsWith(TOKEN_PREFIX)) {
 			return bearerToken.substring(7, bearerToken.length());
 		}
-		
+
 		return null;
 	}
+
+
 }

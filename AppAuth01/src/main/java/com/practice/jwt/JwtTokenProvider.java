@@ -37,7 +37,7 @@ public class JwtTokenProvider {
         claims.put("username", account.getUsername());
         claims.put("email", account.getEmail());
         claims.put("authorities", authentication.getAuthorities());
-       
+
         return Jwts.builder()
                 .setSubject(accountId)
                 .setClaims(claims)
@@ -65,27 +65,20 @@ public class JwtTokenProvider {
 		}
     	return false;
     }
-    
+
     //Get user Id from token
     public String getUserEmailFromJWT(String token) {
     	// return all the key value inside the key (username, email, role)
-    	Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody(); 
+    	Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
     	String email = (String)claims.get("email");
-    	
+
     	return email;
     }
-	  public String getUserRoleFromJWT(String token) {
-		// return all the key value inside the key (username, email, role)
-		Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody(); 
-		String role = (String)claims.get("role");
-		
-		return role;
-	  }
 //    public Long getUserIdFromJWT(String token) {
 //    	// return all the key value inside the key (username, email, role)
-//    	Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody(); 
+//    	Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
 //    	String id = (String)claims.get("id");
-//    	
+//
 //    	return Long.parseLong(id);
 //    }
 }

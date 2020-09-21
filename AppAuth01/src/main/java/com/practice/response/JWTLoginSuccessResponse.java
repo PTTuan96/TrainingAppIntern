@@ -1,35 +1,15 @@
 package com.practice.response;
 
-public class JWTLoginSuccessResponse {
-    private boolean success;
-    private String token;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    public JWTLoginSuccessResponse(boolean success, String token) {
-        this.success = success;
-        this.token = token;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    @Override
-    public String toString() {
-        return "JWTLoginSuccessResponse{" +
-                "success=" + success +
-                ", token='" + token + '\'' +
-                '}';
-    }
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class JWTLoginSuccessResponse<T> {
+	private boolean success;
+	private T payload;
 }

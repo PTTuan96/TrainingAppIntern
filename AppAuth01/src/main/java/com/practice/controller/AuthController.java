@@ -1,6 +1,7 @@
 package com.practice.controller;
 
 import com.practice.inputform.LoginRequest;
+import com.practice.jwt.JwtFilter;
 import com.practice.jwt.JwtTokenProvider;
 import com.practice.response.JWTLoginSuccessResponse;
 //import com.practice.validator.AccountValidator;
@@ -34,6 +35,9 @@ public class AuthController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
+	@Autowired
+	private JwtFilter jwtFilter;
+
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@RequestBody Account account){ //BindingResult result
 //		accountValidator.validate(account, result);
@@ -43,6 +47,7 @@ public class AuthController {
 		return new ResponseEntity<Account>(account, HttpStatus.CREATED);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate( // Run to loadByUserName in AccountService
@@ -53,8 +58,9 @@ public class AuthController {
 		);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = TOKEN_PREFIX + tokenProvider.generateToken(authentication);
-
-		return ResponseEntity.ok(new JWTLoginSuccessResponse(true, jwt));
+		Account account =  (Account) authentication.getPrincipal();
+		account.setToken(jwt);
+		return ResponseEntity.ok(new JWTLoginSuccessResponse(true, account));
 	}
 
 	@GetMapping("/logout")

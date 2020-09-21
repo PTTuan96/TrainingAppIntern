@@ -7,25 +7,33 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.practice.jwt.JwtTokenProvider;
 //import com.practice.auth.UserDao;
 import com.practice.model.Account;
 import com.practice.repository.AccountRepository;
+import static com.practice.security.Role.*;
 
 @Service
 public class AccountService implements UserDetailsService{
-	
+
 	@Autowired
 	private AccountRepository accountRepository;
+
+	@Autowired
+	private JwtTokenProvider tokenProvider;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Account account = accountRepository.findByEmail(email);
-		if(account == null) throw new UsernameNotFoundException(String.format("Username %s not found", email)); 
+		if(account == null) throw new UsernameNotFoundException(String.format("Username %s not found", email));
 		account.setGrantedAuthority(account.getRole().getGrantedAuthorities());
 		return account;
 	}
-	
+
 	public Long saveAccount(Account account) {
+			account.setRole(USER);
 			return accountRepository.saveAccount(account);
 	}
+
 }

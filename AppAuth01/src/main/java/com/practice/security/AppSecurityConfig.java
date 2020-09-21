@@ -1,5 +1,6 @@
 package com.practice.security;
 
+import com.practice.jwt.JwtFilter;
 import com.practice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +15,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import static com.practice.security.SecurityStaticConstants.*;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.practice.security.SecurityStaticConstants.*;
+import static com.practice.security.Role.*;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
@@ -33,6 +36,11 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
+	
+	@Bean
+	public JwtFilter jwtFilter() {
+		return new JwtFilter();
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -60,10 +68,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers(MEMBER_API).permitAll()
 			.antMatchers(HISTORY_API).permitAll()
             .anyRequest().authenticated();
-//			.antMatchers("/login").permitAll()
-//			.antMatchers("/","index","/css/*","/js/*").permitAll()
-//			.antMatchers("/api/**").hasRole(USER.name()) //only STUDENT role can access this api and after that
-//			.antMatchers("/api/v1/teams").hasRole(ADMIN.name())
+		
+		http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
 	}
 

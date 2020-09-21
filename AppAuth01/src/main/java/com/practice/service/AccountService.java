@@ -21,6 +21,7 @@ public class AccountService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Account account = accountRepository.findByEmail(email);
 		if(account == null) throw new UsernameNotFoundException(String.format("Username %s not found", email)); 
+		account.setGrantedAuthority(account.getRole().getGrantedAuthorities());
 		return account;
 	}
 	

@@ -4,6 +4,8 @@ import static com.practice.security.SecurityStaticConstants.EXPIRATION_TIME;
 import static com.practice.security.SecurityStaticConstants.SECRET;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +21,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.practice.inputform.LoginRequest;
 import com.practice.model.Account;
+import com.practice.service.AccountService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,50 +38,49 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import static com.practice.security.SecurityStaticConstants.*;
 
 
-public class JwtFilter extends UsernamePasswordAuthenticationFilter{
+public class JwtFilter extends OncePerRequestFilter{
+	@Autowired
+	private JwtTokenProvider tokenProvider;
+	
+	@Autowired
+	private AccountService accountService;
 
-//	@Autowired
-//	private ModelMapper modelMapper;
-//	
-//	@Autowired
-//	private AuthenticationManager authenticationManager;
-//	
-//	@Override
-//	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-//			throws AuthenticationException {
-//		try {
-//			LoginRequest authRequest = modelMapper.map(request.getInputStream(), LoginRequest.class); 
-//			
-//			Authentication authentication = new UsernamePasswordAuthenticationToken(
-//					authRequest.getUsername(), 
-//					authRequest.getPassword()
-//			);
-//			
-//			Authentication authenticate = authenticationManager.authenticate(authentication);
-//			
-//			return authenticate;
-//		}catch (IOException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-//
-//	@Override
-//	protected void successfulAuthentication(HttpServletRequest request,
-//											HttpServletResponse response,
-//											FilterChain chain,
-//											Authentication authResult) throws IOException, ServletException {
-//        Date now = new Date(System.currentTimeMillis());
-//        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
-//	
-//		String token = Jwts.builder()
-//	                .setSubject(authResult.getName())
-//	                .claim(AUTH_KEYWORD, authResult.getAuthorities())
-//	                .setIssuedAt(now)
-//	                .setExpiration(expiryDate)
-//	                .signWith(SignatureAlgorithm.HS512, SECRET)
-//	                .compact();
-//		response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
-//	}
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+		try {
+			
+			String jwt = getJWTFromRequest(request);
+			
+			if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+				String email = tokenProvider.getUserEmailFromJWT(jwt);
+//				String role = tokenProvider.getUserRoleFromJWT(jwt);
+				UserDetails userDetails = accountService.loadUserByUsername(email);
+				
+				
+				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+						userDetails        , userDetails.isCredentialsNonExpired(), userDetails.getAuthorities()
+				); //current logged user   , status about userAccount             , role and authorities
+				
+				
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+			
+		}catch (Exception ex) {
+			logger.error("Could not set user authentication in security context", ex);
+		}
+		
+		filterChain.doFilter(request, response);
+	}
 	
-	
+	private String getJWTFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader(HEADER_STRING);
+		
+		if(StringUtils.hasText(bearerToken)&&bearerToken.startsWith(TOKEN_PREFIX)) {
+			return bearerToken.substring(7, bearerToken.length());
+		}
+		
+		return null;
+	}
 }

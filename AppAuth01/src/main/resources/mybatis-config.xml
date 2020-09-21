@@ -5,7 +5,6 @@
 <configuration>
         <typeAliases>
         	<typeAlias type="com.practice.model.Team" alias="Team"/>
-        	<typeAlias type="com.practice.model.Tournament" alias="Tournament"/>
         	<typeAlias type="com.practice.model.Profile" alias="Profile"/>
         	<typeAlias type="com.practice.model.Account" alias="Account"/>
         	<typeAlias type="com.practice.model.History" alias="History"/>
@@ -14,7 +13,6 @@
         </typeHandlers>
         <mappers>
         	<mapper resource="xmlmapper/TeamMapper.xml"/>
-        	<mapper resource="xmlmapper/TourMapper.xml"/>
         	<mapper resource="xmlmapper/ProfileMapper.xml"/>
         	<mapper resource="xmlmapper/AccountMapper.xml"/>
         	<mapper resource="xmlmapper/HistoryMapper.xml"/>

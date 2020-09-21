@@ -1,8 +1,15 @@
 package com.practice.jwt;
 
 import com.practice.model.Account;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -29,8 +36,8 @@ public class JwtTokenProvider {
         claims.put("id", (Long.toString(account.getId())));
         claims.put("username", account.getUsername());
         claims.put("email", account.getEmail());
-        claims.put("role", account.getRole());
-
+        claims.put("authorities", authentication.getAuthorities());
+       
         return Jwts.builder()
                 .setSubject(accountId)
                 .setClaims(claims)
@@ -41,6 +48,44 @@ public class JwtTokenProvider {
     }
 
     //Validate the token
-
+    public boolean validateToken(String token) {
+    	try {
+    		Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
+    		return true;
+    	}catch (SignatureException ex) {
+			System.out.print("Invalid JWT Signature");
+		}catch (MalformedJwtException ex) {
+			System.out.print("Invalid JWT Token");
+		}catch (ExpiredJwtException ex) {
+			System.out.print("Expired JWT token");
+		}catch (UnsupportedJwtException e) {
+			System.out.print("Unsupported JWT token");
+		}catch (IllegalArgumentException e) {
+			System.out.print("JWT claims string is empty");
+		}
+    	return false;
+    }
+    
     //Get user Id from token
+    public String getUserEmailFromJWT(String token) {
+    	// return all the key value inside the key (username, email, role)
+    	Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody(); 
+    	String email = (String)claims.get("email");
+    	
+    	return email;
+    }
+	  public String getUserRoleFromJWT(String token) {
+		// return all the key value inside the key (username, email, role)
+		Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody(); 
+		String role = (String)claims.get("role");
+		
+		return role;
+	  }
+//    public Long getUserIdFromJWT(String token) {
+//    	// return all the key value inside the key (username, email, role)
+//    	Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody(); 
+//    	String id = (String)claims.get("id");
+//    	
+//    	return Long.parseLong(id);
+//    }
 }

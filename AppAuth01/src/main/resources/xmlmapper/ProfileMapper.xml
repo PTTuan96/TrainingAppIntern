@@ -33,11 +33,11 @@
 		#{avatar}
 		);
 
-		SET @var_id := (SELECT MAX(id) from profile_tbl);
+		<!-- SET @var_id := (SELECT MAX(id) from profile_tbl);
 
 		INSERT INTO history (id_member, id_team, id_tour)
-		<!-- VALUES (@var_id, #{team.id}); -->
-		VALUES (@var_id, 0 , 0)
+		VALUES (@var_id, #{team.id});
+		VALUES (@var_id, 0 , 0) -->
 
 	</insert>
 

@@ -18,5 +18,9 @@ public class MemberRepository {
 	public List<Account> getMembersEmailByRole() {
 		return accountMapper.getMembersEmailByRole();
 	}
+	
+	public Account findByEmailMember(String email) {
+		return accountMapper.findByEmail(email);
+	}
 
 }

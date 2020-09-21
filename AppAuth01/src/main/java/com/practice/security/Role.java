@@ -5,10 +5,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
+import static com.practice.security.Permission.*;
 public enum Role {
 	USER(Sets.newHashSet()),
-	ADMIN(Sets.newHashSet());
+	ADMIN(Sets.newHashSet(MEMBER_READ, MEMBER_WRITE)),
+	MEMBER(Sets.newHashSet());
 	
 	private final Set<Permission> permissions;
 

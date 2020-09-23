@@ -1,5 +1,6 @@
 package com.practice.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,14 @@ public class AccountService implements UserDetailsService{
 	public Long saveAccount(Account account) {
 			account.setRole(USER);
 			return accountRepository.saveAccount(account);
+	}
+
+	public List<Account> getAllAccounts(){
+		return accountRepository.getAllAccounts();
+	}
+
+	public Account findByEmail(String email) {
+		return accountRepository.findByEmail(email);
 	}
 
 }

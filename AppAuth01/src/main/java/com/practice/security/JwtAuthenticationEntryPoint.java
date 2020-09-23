@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.practice.response.InvalidLoginResponse;
+import com.practice.response.JWTLoginSuccessResponse;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -24,9 +25,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         String jsonLoginResponse = new Gson().toJson(loginResponse);
 
         response.setContentType("application/json");
-        response.setStatus(401);
+        response.setStatus(200);
         response.getWriter().print(jsonLoginResponse);
 	}
 
-    
+
 }

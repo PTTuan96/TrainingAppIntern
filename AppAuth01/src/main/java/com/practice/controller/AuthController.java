@@ -8,16 +8,20 @@ import com.practice.response.JWTLoginSuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import com.practice.model.Account;
 import com.practice.service.AccountService;
 
 import static com.practice.security.SecurityStaticConstants.TOKEN_PREFIX;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -60,12 +64,26 @@ public class AuthController {
 		String jwt = TOKEN_PREFIX + tokenProvider.generateToken(authentication);
 		Account account =  (Account) authentication.getPrincipal();
 		account.setToken(jwt);
-		return ResponseEntity.ok(new JWTLoginSuccessResponse(true, account));
+		return ResponseEntity.ok(new JWTLoginSuccessResponse(1, "Create Success" , account));
 	}
 
-	@GetMapping("/logout")
-	public String getLogout() {
-		return "Logout Success";
+//	@GetMapping("/logout")
+//	public String getLogout() {
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		if (auth != null) {
+//		    new SecurityContextLogoutHandler().logout(request, response, auth);
+//		}
+//	}
+
+	@GetMapping("/all")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Account> getAllAccounts(){
+		return accountService.getAllAccounts();
 	}
 
+	@GetMapping("/{email}")
+	@PreAuthorize("hasRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+	public Account findByEmail(@PathVariable String email) {
+		return accountService.findByEmail(email);
+	}
 }

@@ -1,5 +1,6 @@
 package com.practice.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,9 @@ public class AccountRepository {
 
 	public Account getById(int id) {
 		return accountMapper.findById(id);
+	}
+
+	public List<Account> getAllAccounts(){
+		return accountMapper.getAllAccounts();
 	}
 }

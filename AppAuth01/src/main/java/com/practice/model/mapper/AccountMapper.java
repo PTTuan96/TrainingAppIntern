@@ -13,4 +13,5 @@ public interface AccountMapper {
 	Account findByEmail(@Param("email") String email);
 	public Long saveAccount(Account account);
 	public List<Account> getMembersEmailByRole();
+	public List<Account> getAllAccounts();
 }

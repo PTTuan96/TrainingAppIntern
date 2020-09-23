@@ -25,7 +25,7 @@
 		</association>
 	</resultMap>
 
-	<select id="findAll" resultMap="accountMapping">
+	<select id="getAllAccounts" resultMap="accountMapping">
 		SELECT * FROM account_tbl ORDER BY id DESC
 	</select>
 

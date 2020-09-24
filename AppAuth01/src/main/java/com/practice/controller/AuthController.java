@@ -1,5 +1,6 @@
 package com.practice.controller;
 
+import com.practice.dto.InfoUserDTO;
 import com.practice.inputform.LoginRequest;
 import com.practice.jwt.JwtFilter;
 import com.practice.jwt.JwtTokenProvider;
@@ -22,6 +23,8 @@ import com.practice.service.AccountService;
 import static com.practice.security.SecurityStaticConstants.TOKEN_PREFIX;
 
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -51,7 +54,6 @@ public class AuthController {
 		return new ResponseEntity<Account>(account, HttpStatus.CREATED);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate( // Run to loadByUserName in AccountService
@@ -86,4 +88,12 @@ public class AuthController {
 	public Account findByEmail(@PathVariable String email) {
 		return accountService.findByEmail(email);
 	}
+
+	@PostMapping("/autoLogin")
+	public ResponseEntity<?> reciveProfileByToken(HttpServletRequest request) {
+		String token = jwtFilter.getJWTFromRequest(request);
+		InfoUserDTO user = tokenProvider.getUserDTOFromJWT(token);
+		return ResponseEntity.ok(user);
+	}
+
 }

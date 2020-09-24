@@ -1,5 +1,6 @@
 package com.practice.jwt;
 
+import com.practice.dto.InfoUserDTO;
 import com.practice.model.Account;
 
 import io.jsonwebtoken.Claims;
@@ -35,8 +36,9 @@ public class JwtTokenProvider {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", (Long.toString(account.getId())));
         claims.put("username", account.getUsername());
-        claims.put("email", account.getEmail());
+        claims.put("avatar", account.getProfile().getAvatar());
         claims.put("authorities", authentication.getAuthorities());
+        claims.put("role", account.getRole());
 
         return Jwts.builder()
                 .setSubject(accountId)
@@ -74,11 +76,14 @@ public class JwtTokenProvider {
 
     	return email;
     }
-//    public Long getUserIdFromJWT(String token) {
-//    	// return all the key value inside the key (username, email, role)
-//    	Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
-//    	String id = (String)claims.get("id");
-//
-//    	return Long.parseLong(id);
-//    }
+
+    public InfoUserDTO getUserDTOFromJWT(String token) {
+    	// return all the key value inside the key (username, email, role)
+    	Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+    	InfoUserDTO info = new InfoUserDTO();
+    	info.setRole((String)claims.get("role"));
+    	info.setUsername((String)claims.get("username"));
+    	info.setAvatar((String)claims.get("avatar"));
+    	return info;
+    }
 }

@@ -1,6 +1,8 @@
 package com.practice.repository;
 
 import java.util.List;
+import java.util.Optional;
+
 import com.practice.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 import com.practice.model.Profile;
@@ -18,9 +20,9 @@ public class ProfileRepository {
 		return profileMapper.saveProfile(profile);
 	}
 
-//	public Optional<Profile> findByEmail(String email) {
-//		return profileMapper.findByEmail(email);
-//	}
+	public Profile findByEmail(String email) {
+		return profileMapper.findByEmail(email);
+	}
 
 	public Profile findById(int id) {
 		return profileMapper.findById(id)

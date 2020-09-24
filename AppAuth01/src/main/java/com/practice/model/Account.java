@@ -9,11 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.practice.security.Role;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Account implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	@JsonIgnore

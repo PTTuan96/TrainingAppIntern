@@ -13,6 +13,8 @@ import com.practice.jwt.JwtTokenProvider;
 //import com.practice.auth.UserDao;
 import com.practice.model.Account;
 import com.practice.repository.AccountRepository;
+import com.practice.repository.ProfileRepository;
+
 import static com.practice.security.Role.*;
 
 @Service
@@ -20,6 +22,9 @@ public class AccountService implements UserDetailsService{
 
 	@Autowired
 	private AccountRepository accountRepository;
+
+	@Autowired
+	private ProfileRepository profileRepository;
 
 	@Autowired
 	private JwtTokenProvider tokenProvider;

@@ -11,7 +11,7 @@ import com.practice.model.Profile;
 public interface ProfileMapper {
 	public Long saveProfile(Profile profile);
 
-//	public Optional<Profile> findByEmail(String email);
+	public Profile findByEmail(String email);
 
 	public Optional<Profile> findById(int id);
 

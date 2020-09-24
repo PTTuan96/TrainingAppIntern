@@ -30,7 +30,14 @@
 	</select>
 
 	<select id="findByEmail" resultMap="accountMapping">
-		SELECT * FROM account_tbl Where account_email=#{email}
+		SELECT a.id as id, a.account_email, a.account_username, a.account_password,
+			   a.account_role,a.account_isAccountNonExpired, a.account_isAccountNonLocked,
+			   a.account_isCredentialsNonExpired,a.account_isEnabled,
+			   p.id ,p.profile_name,p.profile_email,
+			   p.profile_phone,p.profile_age,p.profile_gender,
+			   p.profile_address,p.profile_avatar
+		FROM profile_tbl p
+		INNER JOIN account_tbl a ON p.profile_email = a.account_email where a.account_email = #{email};
 	</select>
 
 	<insert id="saveAccount" parameterType="Account" keyColumn="id" keyProperty="id">
@@ -65,8 +72,8 @@
 	</select> -->
 
 	<select id="getMembersEmailByRole" resultMap="accountMapping">
-		SELECT a.id,a.account_username, p.id as id_profile ,p.profile_name,p.profile_email,p.profile_phone,p.profile_age,p.profile_age,p.profile_gender,p.profile_address,p.profile_avatar
+		SELECT a.id as id, a.account_email as email, a.account_username as username, a.account_role as role,  p.id as id_profile ,p.profile_name,p.profile_email,p.profile_phone,p.profile_age,p.profile_age,p.profile_gender,p.profile_address,p.profile_avatar
 		FROM profile_tbl p
-		INNER JOIN account_tbl a ON p.profile_email = a.account_email;
+		INNER JOIN account_tbl a ON p.profile_email = a.account_email where ;
 	</select>
 </mapper>

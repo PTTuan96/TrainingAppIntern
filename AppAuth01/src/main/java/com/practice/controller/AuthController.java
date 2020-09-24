@@ -1,6 +1,7 @@
 package com.practice.controller;
 
 import com.practice.dto.InfoUserDTO;
+import com.practice.exception.EmailAlreadyExistsException;
 import com.practice.inputform.LoginRequest;
 import com.practice.jwt.JwtFilter;
 import com.practice.jwt.JwtTokenProvider;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.practice.model.Account;
 import com.practice.service.AccountService;
+import com.practice.value.HttpStatusCode;
 
 import static com.practice.security.SecurityStaticConstants.TOKEN_PREFIX;
 
@@ -66,7 +68,7 @@ public class AuthController {
 		String jwt = TOKEN_PREFIX + tokenProvider.generateToken(authentication);
 		Account account =  (Account) authentication.getPrincipal();
 		account.setToken(jwt);
-		return ResponseEntity.ok(new JWTLoginSuccessResponse(1, "Create Success" , account));
+		return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_200, account));
 	}
 
 //	@GetMapping("/logout")
@@ -91,9 +93,13 @@ public class AuthController {
 
 	@PostMapping("/autoLogin")
 	public ResponseEntity<?> reciveProfileByToken(HttpServletRequest request) {
-		String token = jwtFilter.getJWTFromRequest(request);
-		InfoUserDTO user = tokenProvider.getUserDTOFromJWT(token);
-		return ResponseEntity.ok(user);
+		if(request != null) {
+			String token = jwtFilter.getJWTFromRequest(request);
+			return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_200, tokenProvider.getUserDTOFromJWT(token)));
+		}else {
+			return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_500, null));
+		}
+
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.practice.response;
 
+import com.practice.value.HttpStatusCode;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JWTLoginSuccessResponse<T> {
-	private int code;
-	private String message;
+	HttpStatusCode text;
 	private T payload;
 }

@@ -30,7 +30,7 @@ public class AccountService implements UserDetailsService{
 	private JwtTokenProvider tokenProvider;
 
 	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+	public Account loadUserByUsername(String email) throws UsernameNotFoundException {
 		Account account = accountRepository.findByEmail(email);
 		if(account == null) throw new UsernameNotFoundException(String.format("Username %s not found", email));
 		account.setGrantedAuthority(account.getRole().getGrantedAuthorities());

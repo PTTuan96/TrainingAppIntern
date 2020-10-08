@@ -15,13 +15,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import com.practice.model.Account;
 import com.practice.service.AccountService;
 import com.practice.value.HttpStatusCode;
-
 import static com.practice.security.SecurityStaticConstants.TOKEN_PREFIX;
 
 import java.util.List;
@@ -94,8 +92,8 @@ public class AuthController {
 	@PostMapping("/autoLogin")
 	public ResponseEntity<?> reciveProfileByToken(HttpServletRequest request) {
 		if(request != null) {
-			String token = jwtFilter.getJWTFromRequest(request);
-			return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_200, tokenProvider.getUserDTOFromJWT(token)));
+			Account account = (Account) request.getSession().getAttribute("userInfo");
+			return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_200, account ));
 		}else {
 			return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_500, null));
 		}

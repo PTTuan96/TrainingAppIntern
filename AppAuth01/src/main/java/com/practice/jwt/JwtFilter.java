@@ -1,39 +1,20 @@
 package com.practice.jwt;
-
-import static com.practice.security.SecurityStaticConstants.EXPIRATION_TIME;
-import static com.practice.security.SecurityStaticConstants.SECRET;
-
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.practice.inputform.LoginRequest;
 import com.practice.model.Account;
 import com.practice.service.AccountService;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import static com.practice.security.SecurityStaticConstants.*;
 
@@ -55,7 +36,9 @@ public class JwtFilter extends OncePerRequestFilter{
 			if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 
 				String email = tokenProvider.getUserEmailFromJWT(jwt);
-				UserDetails userDetails = accountService.loadUserByUsername(email);
+				Account userDetails = accountService.loadUserByUsername(email);
+				HttpServletRequest httpRequest = (HttpServletRequest) request;
+				httpRequest.getSession().setAttribute("userInfo", userDetails);
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails        , userDetails.isCredentialsNonExpired(), userDetails.getAuthorities()
 				); //current logged user   , status about userAccount             , role and authorities

@@ -6,6 +6,8 @@ import com.practice.inputform.LoginRequest;
 import com.practice.jwt.JwtFilter;
 import com.practice.jwt.JwtTokenProvider;
 import com.practice.response.JWTLoginSuccessResponse;
+import com.practice.response.ResponseQuery;
+
 //import com.practice.validator.AccountValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import com.practice.model.Account;
 import com.practice.service.AccountService;
 import com.practice.value.HttpStatusCode;
+
 import static com.practice.security.SecurityStaticConstants.TOKEN_PREFIX;
 
 import java.util.List;
@@ -42,9 +45,6 @@ public class AuthController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private JwtFilter jwtFilter;
-
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@RequestBody Account account){ //BindingResult result
 //		accountValidator.validate(account, result);
@@ -55,7 +55,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+	public ResponseQuery<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate( // Run to loadByUserName in AccountService
 				new UsernamePasswordAuthenticationToken(
 						loginRequest.getUsername(),
@@ -66,7 +66,7 @@ public class AuthController {
 		String jwt = TOKEN_PREFIX + tokenProvider.generateToken(authentication);
 		Account account =  (Account) authentication.getPrincipal();
 		account.setToken(jwt);
-		return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_200, account));
+		return ResponseQuery.success("Recivce Success", account);
 	}
 
 //	@GetMapping("/logout")
@@ -90,12 +90,12 @@ public class AuthController {
 	}
 
 	@PostMapping("/autoLogin")
-	public ResponseEntity<?> reciveProfileByToken(HttpServletRequest request) {
+	public ResponseQuery<?> reciveProfileByToken(HttpServletRequest request) {
 		if(request != null) {
 			Account account = (Account) request.getSession().getAttribute("userInfo");
-			return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_200, account ));
+			return ResponseQuery.success("Recivce Success", account);
 		}else {
-			return ResponseEntity.ok(new JWTLoginSuccessResponse(HttpStatusCode.HTTP_500, null));
+			return ResponseQuery.faild("Recivce Failed", null);
 		}
 
 	}

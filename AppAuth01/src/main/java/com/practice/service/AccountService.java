@@ -23,12 +23,6 @@ public class AccountService implements UserDetailsService{
 	@Autowired
 	private AccountRepository accountRepository;
 
-	@Autowired
-	private ProfileRepository profileRepository;
-
-	@Autowired
-	private JwtTokenProvider tokenProvider;
-
 	@Override
 	public Account loadUserByUsername(String email) throws UsernameNotFoundException {
 		Account account = accountRepository.findByEmail(email);
